@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Login System</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container {
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #34c759;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #28a745;
+  }
+  
+  p {
+    color: red;
+    font-size: 14px;
+  }
+  
+  #secure-page {
+    margin-top: 20px;
+  }
+  
+  #logout-btn {
+    background-color: #ff3b30;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="auth-container">
+      <div id="register-container">
+        <h2>Register</h2>
+        <input type="text" id="register-username" placeholder="Enter Username">
+        <input type="password" id="register-password" placeholder="Enter Password">
+        <button id="register-btn">Register</button>
+        <p id="register-msg"></p>
+      </div>
+
+      <div id="login-container" style="display: none;">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Enter Username">
+        <input type="password" id="login-password" placeholder="Enter Password">
+        <button id="login-btn">Login</button>
+        <p id="login-msg"></p>
+      </div>
+    </div>
+
+    <div id="secure-page" style="display: none;">
+      <h2>Secured Page</h2>
+      <p>Welcome, <span id="welcome-user"></span>! You have successfully logged in.</p>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    // Register Button
+document.getElementById("register-btn").addEventListener("click", function() {
+  const username = document.getElementById("register-username").value;
+  const password = document.getElementById("register-password").value;
+
+  if (username === "" || password === "") {
+    document.getElementById("register-msg").textContent = "Please fill all fields.";
+    return;
+  }
+
+  // Save user data to localStorage
+  localStorage.setItem("username", username);
+  localStorage.setItem("password", password);
+  
+  document.getElementById("register-msg").textContent = "Registration successful!";
+  document.getElementById("register-username").value = "";
+  document.getElementById("register-password").value = "";
+
+  // Show the login form
+  document.getElementById("register-container").style.display = "none";
+  document.getElementById("login-container").style.display = "block";
+});
+
+// Login Button
+document.getElementById("login-btn").addEventListener("click", function() {
+  const username = document.getElementById("login-username").value;
+  const password = document.getElementById("login-password").value;
+
+  // Retrieve stored data
+  const storedUsername = localStorage.getItem("username");
+  const storedPassword = localStorage.getItem("password");
+
+  if (username === storedUsername && password === storedPassword) {
+    document.getElementById("login-msg").textContent = "";
+    document.getElementById("login-username").value = "";
+    document.getElementById("login-password").value = "";
+
+    // Show secure page and set welcome message
+    document.getElementById("auth-container").style.display = "none";
+    document.getElementById("secure-page").style.display = "block";
+    document.getElementById("welcome-user").textContent = username;
+  } else {
+    document.getElementById("login-msg").textContent = "Invalid credentials!";
+  }
+});
+
+// Logout Button
+document.getElementById("logout-btn").addEventListener("click", function() {
+  document.getElementById("secure-page").style.display = "none";
+  document.getElementById("login-container").style.display = "block";
+});
+
+  </script>
+</body>
+</html>

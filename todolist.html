@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimalist To-Do App</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  header h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+  
+  .add-task {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  #task-title, #task-desc {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  #add-task-btn {
+    padding: 10px 20px;
+    background-color: #34c759;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #add-task-btn:hover {
+    background-color: #28a745;
+  }
+  
+  .task-section {
+    margin-bottom: 30px;
+  }
+  
+  .task-section h2 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+  
+  ul {
+    list-style-type: none;
+  }
+  
+  li {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+  }
+  
+  li span {
+    display: block;
+  }
+  
+  .task-actions button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .complete-btn {
+    background-color: #34c759;
+    color: white;
+  }
+  
+  .delete-btn {
+    background-color: #ff3b30;
+    color: white;
+  }
+  
+  .edit-btn {
+    background-color: #ff9500;
+    color: white;
+  }
+  
+  .task-time {
+    color: #888;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Minimalist To-Do App</h1>
+    </header>
+
+    <section class="add-task">
+      <input type="text" id="task-title" placeholder="Enter task title" />
+      <textarea id="task-desc" placeholder="Enter task description"></textarea>
+      <button id="add-task-btn">Add Task</button>
+    </section>
+
+    <section class="task-lists">
+      <div class="task-section">
+        <h2>Pending Tasks</h2>
+        <ul id="pending-tasks"></ul>
+      </div>
+      
+      <div class="task-section">
+        <h2>Completed Tasks</h2>
+        <ul id="completed-tasks"></ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById("add-task-btn").addEventListener("click", addTask);
+
+function addTask() {
+  const taskTitle = document.getElementById("task-title").value.trim();
+  const taskDesc = document.getElementById("task-desc").value.trim();
+
+  if (taskTitle === "") {
+    alert("Please enter a task title");
+    return;
+  }
+
+  const taskTime = new Date().toLocaleString();
+  createTask(taskTitle, taskDesc, taskTime, "pending-tasks");
+
+  // Clear input fields after adding
+  document.getElementById("task-title").value = "";
+  document.getElementById("task-desc").value = "";
+}
+
+function createTask(taskTitle, taskDesc, taskTime, listId) {
+  const taskList = document.getElementById(listId);
+  const taskItem = document.createElement("li");
+
+  const taskContent = document.createElement("span");
+  taskContent.innerHTML = `<strong>${taskTitle}</strong><br>${taskDesc}`;
+
+  const timeSpan = document.createElement("span");
+  timeSpan.className = "task-time";
+  timeSpan.textContent = `Added on: ${taskTime}`;
+
+  taskItem.appendChild(taskContent);
+  taskItem.appendChild(timeSpan);
+
+  const actions = document.createElement("div");
+  actions.classList.add("task-actions");
+
+  const completeBtn = document.createElement("button");
+  completeBtn.textContent = "Complete";
+  completeBtn.classList.add("complete-btn");
+  completeBtn.addEventListener("click", () => completeTask(taskItem));
+
+  const editBtn = document.createElement("button");
+  editBtn.textContent = "Edit";
+  editBtn.classList.add("edit-btn");
+  editBtn.addEventListener("click", () => editTask(taskItem, taskContent));
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.classList.add("delete-btn");
+  deleteBtn.addEventListener("click", () => deleteTask(taskItem));
+
+  actions.appendChild(completeBtn);
+  actions.appendChild(editBtn);
+  actions.appendChild(deleteBtn);
+  
+  taskItem.appendChild(actions);
+
+  taskList.appendChild(taskItem);
+}
+
+function completeTask(taskItem) {
+  document.getElementById("completed-tasks").appendChild(taskItem);
+  taskItem.querySelector(".complete-btn").remove();
+}
+
+function editTask(taskItem, taskContent) {
+  const taskTitle = prompt("Edit task title:", taskContent.children[0].textContent);
+  const taskDesc = prompt("Edit task description:", taskContent.children[1].textContent);
+
+  if (taskTitle !== null && taskTitle.trim() !== "") {
+    taskContent.innerHTML = `<strong>${taskTitle}</strong><br>${taskDesc}`;
+  }
+}
+
+function deleteTask(taskItem) {
+  taskItem.remove();
+}
+
+  </script>
+</body>
+</html>
